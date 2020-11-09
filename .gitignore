@@ -1,6 +1,4 @@
-/gam_2020.txt
-/get_my_offers.py
-/manage.py
-/remove.py
 /steamstoreindex.json
 /__pycache__
+legacy/
+*.ini

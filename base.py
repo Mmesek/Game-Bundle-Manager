@@ -25,7 +25,8 @@ def check_index(game_name):
 class SQL:
     __slots__ = ('engine', 'Session')
     def __init__(self):
-        self.engine = create_engine("postgresql://postgres:postgres@r4:5432/bundles")
+        c = ConfigToDict()["Database"]
+        self.engine = create_engine(f"{c['db']}://{c['user']}:{c['password']}@{c['location']}:{c['port']}/{c['name']}")
         self.Session = sessionmaker(bind=self.engine)
         self.create_tables()
     def create_tables(self):
@@ -41,7 +42,6 @@ class SQL:
         s = self.session()
         s.delete(mapping)
         return s.commit()
-db = SQL()
 
 def game(game_name: str, bundle: str = None, platform='Steam'):
     game_name = game_name.strip()
@@ -106,3 +106,28 @@ def key(game_name: str, platform: str, quantity: int = 1, add: bool = True):
                 session.delete(prc)
             session.delete(stored_key)
     session.commit()
+
+import configparser
+from os.path import dirname
+def ConfigToDict():
+    dictonary = {}
+    config = configparser.ConfigParser()
+    print(dirname(__file__))
+    config.read(dirname(__file__)+'/config.ini')
+    sections = config.sections()
+    for section in sections:
+        dictonary[section] = {}
+        for option in config.options(section):
+            try:
+                value = config.get(section, option)
+                if value.isdigit():
+                    value = config.getint(section, option)
+                elif value.lower() in ['true', 'false', 'yes', 'no', 'on', 'off']:
+                    value = config.getboolean(section, option)
+                dictonary[section][option] = value
+            except Exception as ex:
+                print("Exception while reading from config file: ", ex)
+                dictonary[section][option] = None
+    return dictonary
+
+db = SQL()

@@ -5,6 +5,9 @@ session = db.session()
 def get_bundle(bundle_name):
     return session.query(Bundles).filter(Bundles.Name == bundle_name).first()
 
+def get_last_bundle():
+    return session.query(Bundles).order_by(Bundles.Date.desc()).first()
+
 def get_prices():
     return session.query(Prices).all()
 
@@ -20,8 +23,10 @@ for arg in argv:
         bundle_name.append(arg)
 
 bundle_name = ' '.join(bundle_name)
-
-bundle = get_bundle(bundle_name)
+if bundle_name == '':
+    bundle = get_last_bundle()
+else:
+    bundle = get_bundle(bundle_name)
 bundle_prc = Decimal(0.0)
 above_prc = Decimal(0.0)
 above_games = {}

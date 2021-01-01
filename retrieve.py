@@ -17,7 +17,7 @@ from sys import argv
 bundle_name = []
 past_file_name = False
 for arg in argv:
-    if arg == __file__:
+    if arg == __file__.split('\\')[-1].split('/')[-1]:
         past_file_name = True
     elif past_file_name:
         bundle_name.append(arg)

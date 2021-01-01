@@ -33,7 +33,9 @@ def sub(*args):
 names = {'game':[], 'platform':'Steam', 'price':12.0, 'cc':'USD'}
 @command(aliases='game, platform, bundle, price, cc', help='Sets value')
 def setter(value, key):
-    if key == 'game':
+    if value == '':
+        pass
+    elif key == 'game':
         names[key].append((value, names['platform']))
     else:
         names[key] = value

@@ -5,9 +5,14 @@ from multiprocessing.dummy import Pool
 from base import *
 bazar = "https://bazar.lowcygier.pl/?type=&title="
 
+import re
+sanitizer = re.compile(r"\w+")
+def sanitize(string):
+    s = sanitizer.findall(string)
+    return ' '.join(s).lower()
 
 def getprc(game):
-    link = bazar+game.strip('™®')
+    link = bazar+sanitize(game)#.strip('™®')
     try:
         getdata = requests.get(link, timeout=10)
     except requests.exceptions.ReadTimeout:
@@ -20,7 +25,7 @@ def getprc(game):
             lis = soup.find("div", id="w0", class_="list-view")
             sel = lis.find_all("div", class_="col-md-7 col-sm-4 col-xs-6 nopadding")
             for each in sel:
-                if each.find("h4", class_="media-heading").a.text == game:
+                if sanitize(each.find("h4", class_="media-heading").a.text) == sanitize(game):
                     prc = (
                         each.find("p", class_="prc")
                         .text.replace(" zł", "")

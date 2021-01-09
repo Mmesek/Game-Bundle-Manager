@@ -52,8 +52,12 @@ def get_games():
     keys = session.query(Keys).filter(Keys.Quantity >= 1).all()
     return [i.Title for i in keys]
 from datetime import datetime
+from influx import Influx
+_infux = Influx()
 def add_prc(game, s):
-    s.merge(Prices(game, getprc(game), datetime.now()))
+    _prc = getprc(game)
+    s.merge(Prices(game, _prc, datetime.now()))
+    _infux.Prices(game, _prc)
 
 pool = Pool(2)
 s = db.session()
@@ -89,3 +93,4 @@ q.join()
 #results = pool.map(add_prc, get_games(), [s, session])
 session.commit()
 s.commit()
+_infux.influx.close()

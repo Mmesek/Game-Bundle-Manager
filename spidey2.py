@@ -57,7 +57,7 @@ _infux = Influx()
 def add_prc(game, s):
     _prc = getprc(game)
     s.merge(Prices(game, _prc, datetime.now()))
-    _infux.Prices(game, _prc)
+    _infux.Prices(game, float(_prc))
 
 pool = Pool(2)
 s = db.session()

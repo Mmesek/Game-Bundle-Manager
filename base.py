@@ -81,7 +81,7 @@ def add_bundle(bundle: str, games: list, price: float = 0.0, currency: str ='EUR
             year = int(bundle.split(' ')[-1])
             month = months.get(bundle.split(' ')[-2])
             monthcal = c.monthdatescalendar(year,month)
-            date = [day for week in monthcal for day in week if day.weekday() == calendar.FRIDAY and day.month == month][-1]
+            date = [day for week in monthcal for day in week if day.weekday() == calendar.TUESDAY and day.month == month][-1]
         else:
             date = datetime.date.today()
         session.add(Bundles(bundle, _games, price, currency, date))

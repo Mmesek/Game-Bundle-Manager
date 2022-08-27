@@ -15,3 +15,20 @@ class Influx:
             .tag("game", game)
             .field("price", price))
         )
+    def Offers(self, game, price):
+        self.write_api.write(bucket="Prices/autogen", record=(
+            Point("Offers")
+            .tag("game", game)
+            .field("price", price))
+        )
+    def write(self, bucket, point, tags, fields, time=None):
+        p = Point(point)
+        for tag in tags:
+            p.tag(tag, tags[tag])
+        for field in fields:
+            p.field(field, fields[field])
+        if time:
+            p.time(datetime.datetime.fromtimestamp(time))
+        self.write_api.write(bucket=bucket+'/autogen', record=p)
+    def query(self, query):
+        return self.query_api.query(query) 
